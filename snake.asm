@@ -92,6 +92,7 @@ MAIN:
 	
 	jal ARENA		#subrotina para preencher a arena
 	nop
+
 	
 	done			#macro para finalizar o programa
 	
@@ -139,11 +140,14 @@ COBRA:				#subrotina que pinta o personagem
 	or $t1, $zero, $s0	#faz uma cópia do s0 pra t1
 	push $ra		#empilha o ra
 	
+	ori $a0, $zero, 0x1980
+	
 	sw $s3, 1980($t1)	#pinta o personagem no meio da tela
 	add $t1, $t1, 0x4	#faz isso pra 3 pixels
 	sw $s3, 1980($t1)
 	add $t1, $t1, 0x4
 	sw $s3, 1980($t1)
+	
 	pop $ra			#desempilha o ra
 	jr $ra			#volta pra subrotina chamadora
 	nop
@@ -273,4 +277,4 @@ COMIDA:
 	pop $ra
 	jr $ra
 	nop
-	
+
