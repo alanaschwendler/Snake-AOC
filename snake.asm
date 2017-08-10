@@ -58,15 +58,11 @@
 	#cores do jogo
 	corFundo: .word 0xacc4f6
 	corComida: .word 0xd41a1a
-	corCobra: .word 0x000080080 
+	corCobra: .word 0xFF7777 
 	corBorda: .word 0x000080080 
 	
 	#tamanho inicial do jogador
 	tamanhoInicial: .half 5
-	
-	#posição inicial do jogador
-	posJogX: .half 10
-	posJogY: .half 10
 	
 	#posição inicial da comida
 	posComX: .half 5
@@ -93,8 +89,66 @@ MAIN:
 	jal ARENA		#subrotina para preencher a arena
 	nop
 
+##----------------- Configurações de gameplay ------------------------##
+
+	addi $a0, $s0, 1080	# posicao de inicio da cabeça
+	li $a1, 1		# direcao de movimento
+	li $a2, 3		# tamanho da cobra
 	
-	done			#macro para finalizar o programa
+	push $a0		# empilha cabeça
+	addi $a0, $a0, 0x4	# e o corpo inicial
+	push $a0
+	addi $a0, $a0, 0x4
+	push $a0
+	
+#	pop $a0
+#	sw $s3, 0($a0)		# desenha cabeça
+#	pop $a0			# e o corpo inicial
+#	sw $s3, 0($a0)
+#	pop $a0
+#	sw $s3, 0($a0)
+	
+	li $t1, -4
+	mult $t1, $a2		# contador para apontar pra topo da pilha
+	mflo $t1
+#	add $sp, $sp, $t1	# faz o $sp apontar novamente pra base
+	
+PLAY:				# subrotina de jogo
+	beq $zero, 1, DONE	
+	nop
+	
+	addi $sp, $sp 0x4	# aponta pro proximo pedaço
+	li $t0, 1		# comeca contador
+	
+mov:	beq $t0, $a2, pronta
+	nop
+	
+	lw $a0, 0($sp)		# carrega cauda
+	sw $s1, 0($a0)		# apaga cauda
+	lw $a0, 4($sp)		# atualiza cauda
+	sw $a0, 0($sp)		# salva na memoria
+	sw $s3, 0($a0)		# pinta na tela
+	addi $sp, $sp, 4	# atualiza apontador	 
+	addi $t0, $t0, 1	# atualiza contador
+	j mov
+	nop
+	
+pronta: 
+	lw $a0, 0($sp)
+	addi $a0, $a0, 0x4
+	sw $a0, 0($sp)
+	sw $s3, 0($a0) 
+	add $sp, $sp, $t1
+	j PLAY
+	nop
+	
+	
+DONE:  li $v0, 10
+	syscall
+	#done			#macro para finalizar o programa
+	
+	
+###############################################################################################################################################	
 	
 ARENA:				#subrotina que preenche a arena
 	push $ra		#empilha o ra
@@ -111,8 +165,8 @@ ARENA:				#subrotina que preenche a arena
 	li $v0, 31
 	syscall
 	
-	jal COBRA		#subrotina para imprimir a cobra
-	nop
+	#jal COBRA		#subrotina para imprimir a cobra
+	#nop
 	
 	push $s0
 	jal BORDA		#subrotina para preencher as bordas da arena
