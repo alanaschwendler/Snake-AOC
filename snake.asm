@@ -73,10 +73,10 @@
 	posComY: .half 5
 	
 	#movimentos
-	cima: .asciiz "w"
-	baixo: .asciiz "s"
-	esquerda: .asciiz "a"
-	direita: .asciiz "d"
+	cima: .ascii "w"
+	baixo: .ascii "s"
+	esquerda: .ascii "a"
+	direita: .ascii "d"
 .text
 
 MAIN: 
@@ -87,18 +87,63 @@ MAIN:
 	lw $s4, corBorda
 	lw $s5, tamX		#carrega os tamanhos
 	lw $s6, tamY
+	lw $t9, 0xffff0004	#vai ver a tecla pressionada
 	or $t0, $zero, 0	#contador
 	push $s0		#empilha a base de endereço
 	
-	jal ARENA		#subrotina para preencher a arena
+	jal MENU
 	nop
-
+	
+	j ESCOLHA
+	nop
 	
 	done			#macro para finalizar o programa
+	
+MENU:
+	push $ra
+	push $s0
+	
+	ori $t0, $zero, 0
+	
+	pop $s0
+	push $s0
+	jal LOOP_ARENA		#preenche o fundo do menu
+	nop
+	
+	pop $s0
+	push $s0
+	jal MENU_JOGAR
+	nop
+	
+	pop $s0
+	pop $ra
+	jr $ra
+	nop	
+	
+ESCOLHA:
+	lw $t9, 0xffff0004
+	
+	beq $t9, 0x00000077, CHAMA_ARENA
+	nop
+	
+	beq $t9, 0x00000032, FIM
+	nop
+	
+	j ESCOLHA
+	nop
+	
+CHAMA_ARENA:
+	jal ARENA
+	nop
+	
+	j FIM
+	nop
 	
 ARENA:				#subrotina que preenche a arena
 	push $ra		#empilha o ra
 	push $s0		#empilha o s0
+	
+	ori $t0, $zero, 0
 	jal LOOP_ARENA		#subrotina que preenche o fundo
 	nop
 	
@@ -280,6 +325,7 @@ END_LOOP_BORDA_DIREITA:
 	
 COMIDA:
 	push $ra
+<<<<<<< HEAD
 #	sw $s2, 1096($s0)
 	ori $v0, $zero, 30		# Retrieve system time
 	syscall
@@ -291,3 +337,100 @@ COMIDA:
 	pop $ra
 	jr $ra
 	nop
+=======
+	sw $s2, 1088($s0)
+	pop $ra
+	jr $ra
+	nop
+	
+MENU_JOGAR:
+	push $ra
+	
+	#J
+	sw $s4, 1552($s0)
+	sw $s4, 1556($s0)
+	sw $s4, 1560($s0)
+	sw $s4, 1564($s0)
+	sw $s4, 1568($s0)
+	sw $s4, 1688($s0)
+	sw $s4, 1816($s0)
+	sw $s4, 1944($s0)
+	sw $s4, 1936($s0)
+	sw $s4, 2072($s0)
+	sw $s4, 2068($s0)
+	
+	#O
+	sw $s4, 1576($s0)
+	sw $s4, 1580($s0)
+	sw $s4, 1584($s0)
+	sw $s4, 1588($s0)
+	sw $s4, 1704($s0)
+	sw $s4, 1716($s0)
+	sw $s4, 1832($s0)
+	sw $s4, 1844($s0)
+	sw $s4, 1960($s0)
+	sw $s4, 1972($s0)
+	sw $s4, 2088($s0)
+	sw $s4, 2088($s0)
+	sw $s4, 2092($s0)
+	sw $s4, 2096($s0)
+	sw $s4, 2100($s0)
+	
+	#G
+	sw $s4, 1596($s0)
+	sw $s4, 1600($s0)
+	sw $s4, 1604($s0)
+	sw $s4, 1608($s0)
+	sw $s4, 1724($s0)
+	sw $s4, 1852($s0)
+	sw $s4, 1860($s0)
+	sw $s4, 1864($s0)
+	sw $s4, 1980($s0)
+	sw $s4, 1992($s0)
+	sw $s4, 2108($s0)
+	sw $s4, 2112($s0)
+	sw $s4, 2116($s0)
+	sw $s4, 2120($s0)
+	
+	#A
+	sw $s4, 1616($s0)
+	sw $s4, 1620($s0)
+	sw $s4, 1624($s0)
+	sw $s4, 1628($s0)
+	sw $s4, 1744($s0)
+	sw $s4, 1756($s0)
+	sw $s4, 1872($s0)
+	sw $s4, 1876($s0)
+	sw $s4, 1880($s0)
+	sw $s4, 1884($s0)
+	sw $s4, 2000($s0)
+	sw $s4, 2012($s0)
+	sw $s4, 2128($s0)
+	sw $s4, 2140($s0)
+	
+	
+	#R
+	sw $s4, 1636($s0)
+	sw $s4, 1640($s0)
+	sw $s4, 1644($s0)
+	sw $s4, 1648($s0)
+	sw $s4, 1764($s0)
+	sw $s4, 1776($s0)
+	sw $s4, 1892($s0)
+	sw $s4, 1896($s0)
+	sw $s4, 1900($s0)
+	sw $s4, 1904($s0)
+	sw $s4, 2020($s0)
+	sw $s4, 2028($s0)
+	sw $s4, 2148($s0)
+	sw $s4, 2160($s0)
+	
+	
+	pop $ra
+	jr $ra
+	nop
+
+
+FIM:
+	nop
+>>>>>>> 54b77cfd09b287797946a413f6007b314759bc12
