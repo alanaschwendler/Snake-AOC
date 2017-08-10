@@ -273,8 +273,14 @@ END_LOOP_BORDA_DIREITA:
 	
 COMIDA:
 	push $ra
-	sw $s2, 1096($s0)
+#	sw $s2, 1096($s0)
+	ori $v0, $zero, 30		# Retrieve system time
+	syscall
+	or $a1, $zero, $a0		# Move the low order bytes to a1
+	ori $a0, $zero, 1		# Set generator number
+	ori $v0, $zero, 40		# Seed the generator with it
+	syscall
+
 	pop $ra
 	jr $ra
 	nop
-
