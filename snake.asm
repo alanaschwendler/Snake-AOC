@@ -90,7 +90,7 @@ MAIN:
 	jal MENU
 	nop
 
-	j ESCOLHA
+	jal ESCOLHA
 	nop
 
 ##----------------- Configurações de gameplay ------------------------##
@@ -133,6 +133,8 @@ PLAY:
 	beq $a1, 4, cbaixo
 	nop
 
+	j PLAY
+	nop
 
 cbaixo:
 	addi $a0, $a0, 128	# atualiza cabeca
@@ -181,7 +183,6 @@ pronta:
 
 DONE:  li $v0, 10
 	syscall
-	#done			#macro para finalizar o programa
 
 
 ###############################################################################################################################################
@@ -208,6 +209,7 @@ MENU:
 	nop
 
 ESCOLHA:
+	push $ra
 	lw $t9, 0xffff0004
 
 	beq $t9, 0x00000077, CHAMA_ARENA
@@ -243,9 +245,6 @@ ARENA:				#subrotina que preenche a arena
 	li $v0, 31
 	syscall
 
-	#jal COBRA		#subrotina para imprimir a cobra
-	#nop
-
 	push $s0
 	jal BORDA		#subrotina para preencher as bordas da arena
 	nop
@@ -273,22 +272,6 @@ LOOP_ARENA:			#subrotina com loop para pintar os pixels do fundo
 
 LOOP_ARENA_END:			#subrotina que finaliza o loop da arena
 	jr $ra
-	nop
-
-COBRA:				#subrotina que pinta o personagem
-	or $t1, $zero, $s0	#faz uma cópia do s0 pra t1
-	push $ra		#empilha o ra
-
-	ori $a0, $zero, 0x1980
-
-	sw $s3, 1980($t1)	#pinta o personagem no meio da tela
-	add $t1, $t1, 0x4	#faz isso pra 3 pixels
-	sw $s3, 1980($t1)
-	add $t1, $t1, 0x4
-	sw $s3, 1980($t1)
-
-	pop $ra			#desempilha o ra
-	jr $ra			#volta pra subrotina chamadora
 	nop
 
 BORDA:				#subrotina para preencher as bordas da tela
@@ -506,4 +489,6 @@ MENU_JOGAR:
 
 
 FIM:
+	pop $ra
+	jr $ra
 	nop
