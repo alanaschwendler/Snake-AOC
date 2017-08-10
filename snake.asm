@@ -73,6 +73,7 @@
 	baixo: .asciiz "s"
 	esquerda: .asciiz "a"
 	direita: .asciiz "d"
+	
 .text
 
 MAIN: 
@@ -91,54 +92,86 @@ MAIN:
 
 ##----------------- Configurações de gameplay ------------------------##
 
+	li $v0, 9		# Aloca memória para salvar os endereços da cobra
+	li $a0, 1024
+	syscall
+	move $t3, $v0		# inicio do vetor em $t3
+	move $t4, $t3		# copia inicio do vetor para $t4
+	
 	addi $a0, $s0, 1080	# posicao de inicio da cabeça
-	li $a1, 1		# direcao de movimento
-	li $a2, 3		# tamanho da cobra
 	
-	push $a0		# empilha cabeça
-	addi $a0, $a0, 0x4	# e o corpo inicial
-	push $a0
-	addi $a0, $a0, 0x4
-	push $a0
-	
-#	pop $a0
-#	sw $s3, 0($a0)		# desenha cabeça
-#	pop $a0			# e o corpo inicial
-#	sw $s3, 0($a0)
-#	pop $a0
-#	sw $s3, 0($a0)
-	
-	li $t1, -4
-	mult $t1, $a2		# contador para apontar pra topo da pilha
-	mflo $t1
-#	add $sp, $sp, $t1	# faz o $sp apontar novamente pra base
-	
-PLAY:				# subrotina de jogo
+	sw $a0, 0($t4)
+	addi $t4, $t4, 4
+	addi $a0, $a0, -4
+	sw $a0, 0($t4)
+	addi $t4, $t4, 4
+	addi $a0, $a0, -4
+	sw $a0, 0($t4)
+		
+PLAY:	
 	beq $zero, 1, DONE	
 	nop
 	
-	addi $sp, $sp 0x4	# aponta pro proximo pedaço
-	li $t0, 1		# comeca contador
+	li $a1, 3		# direcao de movimento
+	li $a2, 3		# tamanho da cobra 
+	
+	li $t0, 2		# comeca contador
+	move $t4, $t3		# vai pro inicio do vetor
+	
+	lw $a0, 0($t4)		# carrega cabeca
+	move $t5, $a0		# salva a posicao em $t5
+	
+	beq $a1, 1, cdireita
+	nop
+	beq $a1, 2, cesquerda
+	nop
+	beq $a1, 3, ccima
+	nop
+	beq $a1, 4, cbaixo
+	nop
+	
+	
+cbaixo:
+	addi $a0, $a0, 128	# atualiza cabeca
+	j sai
+	nop
+ccima:
+	addi $a0, $a0, -128	# atualiza cabeca
+	j sai
+	nop
+cesquerda:
+	addi $a0, $a0, -4	# atualiza cabeca
+	j sai
+	nop
+cdireita:
+	addi $a0, $a0, 4	# atualiza cabeca	
+	j sai
+	nop
+	
+sai:				
+	sw $a0, 0($t4)		# salva na memoria
+	sw $s3, 0($a0) 		# pinta na tela
+	addi $t4, $t4, 4
 	
 mov:	beq $t0, $a2, pronta
 	nop
 	
-	lw $a0, 0($sp)		# carrega cauda
-	sw $s1, 0($a0)		# apaga cauda
-	lw $a0, 4($sp)		# atualiza cauda
-	sw $a0, 0($sp)		# salva na memoria
+	lw $a0, 0($t4)		# carrega corpo
+	sw $t5, 0($t4)		# atualiza corpo
 	sw $s3, 0($a0)		# pinta na tela
-	addi $sp, $sp, 4	# atualiza apontador	 
+	move $t5, $a0		# salva para proxima posicao em $t5
+	addi $t4, $t4, 4	# atualiza apontador	 
 	addi $t0, $t0, 1	# atualiza contador
 	j mov
 	nop
 	
 pronta: 
-	lw $a0, 0($sp)
-	addi $a0, $a0, 0x4
-	sw $a0, 0($sp)
-	sw $s3, 0($a0) 
-	add $sp, $sp, $t1
+
+	lw $a0, 0($t4)		# carrega cauda
+	sw $t5, 0($t4)		# atualiza cauda na memoria
+	sw $s1, 0($a0)		# apaga cauda
+		 
+		
 	j PLAY
 	nop
 	
