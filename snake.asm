@@ -104,6 +104,13 @@ ARENA:				#subrotina que preenche a arena
 	
 	pop $s0
 	
+	li $a0, 80		#emite som quando monta a arena
+	li $a1, 80
+	li $a2, 32
+	li $a3, 127
+	li $v0, 31
+	syscall
+	
 	jal COBRA		#subrotina para imprimir a cobra
 	nop
 	
