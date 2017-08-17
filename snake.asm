@@ -261,7 +261,7 @@ delay:
 	nop
 
 atualiza_movimento:
-	
+
 	move $a1, $t7
 	j delay
 	nop
