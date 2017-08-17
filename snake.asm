@@ -144,7 +144,7 @@ PLAY:
 cbaixo:
 	addi $t1, $a0, 128	# testa se vai bater na parede
 	lw $t1, 0($t1)
-	beq $t1, $s4, morreu	# se sim, morreu
+	beq $t1, $s4, MORREU	# se sim, morreu
 	nop
 	
 	addi $a0, $a0, 128	# atualiza cabeca
@@ -153,7 +153,7 @@ cbaixo:
 ccima:
 	addi $t1, $a0, -128	# testa se vai bater na parede
 	lw $t1, 0($t1)
-	beq $t1, $s4, morreu	# se sim, morreu
+	beq $t1, $s4, MORREU	# se sim, morreu
 	nop
 
 	addi $a0, $a0, -128	# atualiza cabeca
@@ -162,7 +162,7 @@ ccima:
 cesquerda:
 	addi $t1, $a0, -4	# testa se vai bater na parede
 	lw $t1, 0($t1)
-	beq $t1, $s4, morreu	# se sim, morreu
+	beq $t1, $s4, MORREU	# se sim, morreu
 	nop
 
 
@@ -172,7 +172,7 @@ cesquerda:
 cdireita:
 	addi $t1, $a0, 4	# testa se vai bater na parede
 	lw $t1, 0($t1)
-	beq $t1, $s4, morreu	# se sim, morreu
+	beq $t1, $s4, MORREU	# se sim, morreu
 	nop
 	
 	addi $a0, $a0, 4	# atualiza cabeca
@@ -257,8 +257,8 @@ MENU:
 
 	pop $s0
 	push $s0
-	#jal MENU_JOGAR
-	jal MORREU
+	jal MENU_JOGAR
+	#jal MORREU
 	nop
 
 	pop $s0
@@ -628,15 +628,120 @@ MENU_JOGAR:
 MORREU:
 	push $ra
 	
-	sw $s2, 1552($s0)
-	sw $s2, 1680($s0)
-	sw $s2, 1684($s0)
-	sw $s2, 1808($s0)
+	#G
+	#sw $s4, 828($s0)
+	sw $s2, 788($s0)
+	sw $s2, 792($s0)
+	sw $s2, 796($s0)
+	sw $s2, 912($s0)
+	sw $s2, 1040($s0)
+	sw $s2, 1048($s0)
+	sw $s2, 1052($s0)
+	sw $s2, 1168($s0)
+	sw $s2, 1180($s0)
+	sw $s2, 1300($s0)
+	sw $s2, 1304($s0)
+
+	#A
+	sw $s2, 808($s0)
+	sw $s2, 812($s0)
+	sw $s2, 932($s0)
+	sw $s2, 944($s0)
+	sw $s2, 1060($s0)
+	sw $s2, 1064($s0)
+	sw $s2, 1068($s0)
+	sw $s2, 1072($s0)
+	sw $s2, 1188($s0)
+	sw $s2, 1200($s0)
+	sw $s2, 1316($s0)
+	sw $s2, 1328($s0)
+	
+	#M
+	sw $s2, 824($s0)
+	sw $s2, 840($s0)
+	sw $s2, 952($s0)
+	sw $s2, 956($s0)
+	sw $s2, 964($s0)
+	sw $s2, 968($s0)
+	sw $s2, 1080($s0)
+	sw $s2, 1088($s0)
+	sw $s2, 1096($s0)
+	sw $s2, 1208($s0)
+	sw $s2, 1224($s0)
+	sw $s2, 1336($s0)
+	sw $s2, 1352($s0)
+	
+	#E
+	sw $s2, 848($s0)
+	sw $s2, 852($s0)
+	sw $s2, 856($s0)
+	sw $s2, 860($s0)
+	sw $s2, 976($s0)
+	sw $s2, 1104($s0)
+	sw $s2, 1108($s0)
+	sw $s2, 1112($s0)
+	sw $s2, 1116($s0)
+	sw $s2, 1232($s0)
+	sw $s2, 1360($s0)
+	sw $s2, 1364($s0)
+	sw $s2, 1368($s0)
+	sw $s2, 1372($s0)
+	
+	#O
+	sw $s2, 1812($s0)
 	sw $s2, 1816($s0)
 	sw $s2, 1936($s0)
-
+	sw $s2, 1948($s0)
+	sw $s2, 2064($s0)
+	sw $s2, 2076($s0)
+	sw $s2, 2192($s0)
+	sw $s2, 2204($s0)
+	sw $s2, 2324($s0)
+	sw $s2, 2328($s0)
+	
+	#V
+	sw $s2, 1828($s0)
+	sw $s2, 1844($s0)
+	sw $s2, 1956($s0)
+	sw $s2, 1972($s0)
+	sw $s2, 2084($s0)
+	sw $s2, 2100($s0)
+	sw $s2, 2216($s0)
+	sw $s2, 2224($s0)
+	sw $s2, 2348($s0)
+	
+	#E
+	sw $s2, 1852($s0)
+	sw $s2, 1856($s0)
+	sw $s2, 1860($s0)
+	sw $s2, 1864($s0)
+	sw $s2, 1980($s0)
+	sw $s2, 2108($s0)
+	sw $s2, 2112($s0)
+	sw $s2, 2116($s0)
+	sw $s2, 2120($s0)
+	sw $s2, 2236($s0)
+	sw $s2, 2364($s0)
+	sw $s2, 2368($s0)
+	sw $s2, 2372($s0)
+	sw $s2, 2376($s0)
+	
+	#R
+	sw $s2, 1876($s0)
+	sw $s2, 1880($s0)
+	sw $s2, 2000($s0)
+	sw $s2, 2012($s0)
+	sw $s2, 2128($s0)
+	sw $s2, 2132($s0)
+	sw $s2, 2136($s0)
+	sw $s2, 2140($s0)
+	sw $s2, 2256($s0)
+	sw $s2, 2264($s0)
+	sw $s2, 2384($s0)
+	sw $s2, 2396($s0)
+	
 	pop $ra
-	jr $ra
+	j DONE
 	nop
 
 FIM:
