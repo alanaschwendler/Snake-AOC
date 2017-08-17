@@ -100,27 +100,28 @@ MAIN:
 ##----------------- Configurações de gameplay ------------------------##
 
 	li $v0, 9		# Aloca memória para salvar os endereços da cobra
-	li $a0, 1024
+	li $a0, 1024		# espaço que vai ser alocado
 	syscall
-	move $t3, $v0		# inicio do vetor em $t3
+	move $t3, $v0		# inicio do vetor da cobra em $t3
 	move $t4, $t3		# copia inicio do vetor para $t4
 
 	addi $a0, $s0, 1080	# posicao de inicio da cabeça
 
-	sw $a0, 0($t4)
+	sw $a0, 0($t4)		# essa secao desenha a cabeça da cobra
+	addi $t4, $t4, 4	# e o resto do corpo inicial
+	addi $a0, $a0, -4	# além disso, armazena cada parte
+	sw $a0, 0($t4)		# no vetor da cobra
 	addi $t4, $t4, 4
 	addi $a0, $a0, -4
 	sw $a0, 0($t4)
-	addi $t4, $t4, 4
-	addi $a0, $a0, -4
-	sw $a0, 0($t4)
+	
+	li $a2, 3		# tamanho da cobra
 
 PLAY:
 	beq $zero, 1, DONE
 	nop
 
 	li $a1, 1		# direcao de movimento
-	li $a2, 3		# tamanho da cobra
 
 	li $t0, 2		# comeca contador
 	move $t4, $t3		# vai pro inicio do vetor
@@ -150,10 +151,21 @@ cbaixo:
 	j sai
 	nop
 ccima:
+	addi $t1, $a0, -128	# testa se vai bater na parede
+	lw $t1, 0($t1)
+	beq $t1, $s4, morreu	# se sim, morreu
+	nop
+
 	addi $a0, $a0, -128	# atualiza cabeca
 	j sai
 	nop
 cesquerda:
+	addi $t1, $a0, -4	# testa se vai bater na parede
+	lw $t1, 0($t1)
+	beq $t1, $s4, morreu	# se sim, morreu
+	nop
+
+
 	addi $a0, $a0, -4	# atualiza cabeca
 	j sai
 	nop
@@ -170,13 +182,13 @@ cdireita:
 sai:
 	sw $a0, 0($t4)		# salva na memoria
 	sw $s3, 0($a0) 		# pinta na tela
-	addi $t4, $t4, 4
+	addi $t4, $t4, 4	# proxima posicao do vetor
 
 mov:	beq $t0, $a2, pronta
 	nop
 
-	lw $a0, 0($t4)		# carrega corpo
-	sw $t5, 0($t4)		# atualiza corpo
+	lw $a0, 0($t4)		# carrega posicao do pedaço
+	sw $t5, 0($t4)		# salva no vetor a posicao do pedaco anterior
 	sw $s3, 0($a0)		# pinta na tela
 	move $t5, $a0		# salva para proxima posicao em $t5
 	addi $t4, $t4, 4	# atualiza apontador
@@ -185,12 +197,26 @@ mov:	beq $t0, $a2, pronta
 	nop
 
 pronta:
-
-	lw $a0, 0($t4)		# carrega cauda
-	sw $t5, 0($t4)		# atualiza cauda na memoria
-	sw $s1, 0($a0)		# apaga cauda
 	
 	addi $t6, $zero, 10000	# variavel do delay
+	
+	lw $a0, 0($t4)		# carrega cauda
+	sw $t5, 0($t4)		# atualiza cauda na memoria
+	
+	seq $t1, $t1, $s2	# carrega o teste da comida
+	beq $t1, 1, comeu
+	nop
+	
+	sw $s1, 0($a0)		# apaga cauda
+	j delay
+	nop
+
+comeu:	
+	addi $t4, $t4, 4	# atualiza apontador
+	sw $a0, 0($t4)		# salva nova cauda 	
+	addi $a2, $a2, 1	# aumenta o tamanho	
+	
+	
 delay:	nop
 	addi $t6, $t6, -1
 	beq $t6, $zero, fdelay
