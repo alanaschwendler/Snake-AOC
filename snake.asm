@@ -241,22 +241,39 @@ MENU:
 
 ESCOLHA:	
 	push $ra
-	lw $t9, 0xffff0004		#t9 tem o endereço de onde fica salva a entrada do teclado
+	lw $t9, 0xffff0004			#t9 tem o endereço de onde fica salva a entrada do teclado
+	
+	ori $t0, $zero, 0			#zera o contador
+	
+	j LOOP_ESCOLHA
+	nop
 
+LOOP_ESCOLHA:
+	lw $t9, 0xffff0004
+	
 	beq $t9, 0x00000077, CHAMA_ARENA	#se for w, chama a arena
 	nop
 
-	beq $t9, 0x00000073, FIM		#se for s chama o fim
+	beq $t9, 0x00000073, FIM_LOOP		#se for s chama o fim
 	nop
-
-	j ESCOLHA				#repete a função até ler algo
+	
+	add $t0, $t0, 1
+	beq $t0, 100000, FIM_LOOP
+	nop
+	
+	j LOOP_ESCOLHA				#repete a função até ler algo
+	nop
+	
+FIM_LOOP:
+	pop $ra
+	jr $ra
 	nop
 
 CHAMA_ARENA:
 	jal ARENA
 	nop
 
-	j FIM
+	j FIM_LOOP
 	nop
 
 ARENA:				#subrotina que preenche a arena
