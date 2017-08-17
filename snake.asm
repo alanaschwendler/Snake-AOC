@@ -280,8 +280,13 @@ delay:
 	nop
 
 atualiza_movimento:
+<<<<<<< HEAD
 
 	move $t9, $t7
+=======
+	
+	move $a1, $t7
+>>>>>>> 0c22a3ac42d1d1c2b6864a6f984bc6a4870a501f
 	j delay
 	nop
 
