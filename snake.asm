@@ -61,6 +61,7 @@
 	corCobra: .word 0xFF7777
 	#corBorda: .word 0x00ffee
 	corBorda: .word 0x2d6965
+	corFim: .word 0x00000000
 
 	#tamanho inicial do jogador
 	tamanhoInicial: .half 5
@@ -210,7 +211,7 @@ pronta:
 	j delay
 	nop
 
-comeu:	
+comeu:		
 	addi $t4, $t4, 4	# atualiza apontador
 	sw $a0, 0($t4)		# salva nova cauda 	
 	addi $a2, $a2, 1	# aumenta o tamanho	
@@ -250,13 +251,20 @@ fdelay:	j PLAY
 	nop
 
 
-DONE:  li $v0, 10
+DONE:  
+	lui $s1, 0
+	lui $s2, 0
+	lui $s3, 0
+	lui $s4, 0
+	
+	jal ARENA
+	nop
+	
+	li $v0, 10
 	syscall
 	
 morreu:
-       li $v0, 4
-       la $a0, dead
-       syscall
+       
        j DONE
        nop
        
@@ -302,7 +310,7 @@ LOOP_ESCOLHA:
 	beq $t9, 0x00000077, CHAMA_ARENA	#se for w, chama a arena
 	nop
 
-	beq $t9, 0x00000073, FIM_LOOP		#se for s chama o fim
+	beq $t9, 0x00000073, DONE		#se for s chama o fim
 	nop
 	
 	add $t0, $t0, 1
@@ -491,7 +499,9 @@ END_LOOP_BORDA_DIREITA:
 
 COMIDA:
 	push $ra
-	sw $s2, 1088($s0)
+	
+	sw $s2,1808($s0)		#pinta a comida com base no s0
+	
 	pop $ra
 	jr $ra
 	nop
@@ -762,6 +772,12 @@ MORREU:
 	sw $s2, 2396($s0)
 	
 	pop $ra
+	li $t9, 0
+	sw $t9, 0xffff0004
+	
+	j ESCOLHA
+	nop 
+	
 	j DONE
 	nop
 
