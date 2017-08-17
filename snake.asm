@@ -89,6 +89,7 @@ MAIN:
 	lw $s5, tamX		#carrega os tamanhos
 	lw $s6, tamY
 	lw $t9, 0xffff0004	#vai ver a tecla pressionada
+	li $v1,	10000		#velocidade da snake
 	or $t0, $zero, 0	#contador
 	push $s0		#empilha a base de endereço
 
@@ -206,7 +207,7 @@ mov:	beq $t0, $a2, pronta
 
 pronta:
 	
-	addi $t6, $zero, 10000	# variavel do delay
+	move $t6, $v1 		# variavel do delay
 	
 	lw $t2, 0($t4)		# carrega cauda
 	sw $t5, 0($t4)		# atualiza cauda na memoria
@@ -223,14 +224,32 @@ comeu:
 	addi $t4, $t4, 4	# atualiza apontador
 	sw $t2, 0($t4)		# salva nova cauda 	
 	addi $a2, $a2, 1	# aumenta o tamanho
+	subi $v1, $v1, 200	# aumenta a velocidade
 	
-	ori $v0, $zero, 42
-	ori $a0, $zero, 1
-	ori $a1, $zero, 1020
-	addi $a1, $a1, 0x10010000
+rand:	
+
+	li $v0, 30		# get time in milliseconds (as a 64-bit value)
+	syscall
+
+	move $s7, $a0		# save the lower 32-bits of time
+
+	li $a0, 1		# random generator id (will be used later)
+	move $a1, $s7		# seed from time
+	li $v0, 40		# seed random number generator syscall
+	syscall
+	
+	li $a0, 1		# as said, this id is the same as random generator id
+	li $a1, 255		# upper bound of the range
+	li $v0, 42		# random int range
 	syscall
 	
 	sll $a0, $a0, 2
+	addi $a0, $a0, 0x10010000
+	lw $a1, 0($a0)
+	
+	bne $s1, $a1, rand
+	nop
+	
 	sw $s2, 0($a0)
 	
 	
@@ -261,15 +280,8 @@ delay:
 	nop
 
 atualiza_movimento:
-<<<<<<< HEAD
-	move $t9, $t7
-=======
 
-	beq $a1, $t7, delay
-	nop
-	
-	move $a1, $t7
->>>>>>> 883fdf6ab8c8a88fc91ea832cc19b9b0b30cb640
+	move $t9, $t7
 	j delay
 	nop
 
@@ -683,10 +695,10 @@ MENU_JOGAR:
 
 MORREU:
 	#push $ra
-
+	li $v1,	10000		#velocidade da snake
 	li $a0, 80		#emite som quando monta a arena
 	li $a1, 250		#duração em milissegundos
-	li $a2, 127		#qual som
+	li $a2, 126		#qual som
 	li $a3, 127		#volume 
 	li $v0, 31
 	syscall
