@@ -279,8 +279,36 @@ delay:
 	j delay
 	nop
 
-atualiza_movimento:
+atualiza_movimento: #a0, a1, v0, s7
 
+	seq $a0, $t9, 0x00000077
+	seq $a1, $t7, 0x00000073
+	add $a0, $a0, $a1
+	
+	beq $a0, 2, delay
+	nop
+	
+	seq $a0, $t9, 0x00000073
+	seq $a1, $t7, 0x00000077
+	add $a0, $a0, $a1
+	
+	beq $a0, 2, delay
+	nop
+	
+	seq $a0, $t9, 0x00000064
+	seq $a1, $t7, 0x00000061
+	add $a0, $a0, $a1
+	
+	beq $a0, 2, delay
+	nop
+	
+	seq $a0, $t9, 0x00000061
+	seq $a1, $t7, 0x00000064
+	add $a0, $a0, $a1
+	
+	beq $a0, 2, delay
+	nop
+	
 	move $t9, $t7
 	
 	j delay
