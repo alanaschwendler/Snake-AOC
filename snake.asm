@@ -56,10 +56,11 @@
 	tamY: .word 512
 
 	#cores do jogo
-	corFundo: .word 0xacc4f6
+	corFundo: .word 0xa6a4a4
 	corComida: .word 0xd41a1a
 	corCobra: .word 0xFF7777
-	corBorda: .word 0x000080080
+	#corBorda: .word 0x00ffee
+	corBorda: .word 0x2d6965
 
 	#tamanho inicial do jogador
 	tamanhoInicial: .half 5
@@ -115,7 +116,7 @@ PLAY:
 	beq $zero, 1, DONE
 	nop
 
-	li $a1, 3		# direcao de movimento
+	li $a1, 1		# direcao de movimento
 	li $a2, 3		# tamanho da cobra
 
 	li $t0, 2		# comeca contador
@@ -208,17 +209,17 @@ MENU:
 	jr $ra
 	nop
 
-ESCOLHA:
+ESCOLHA:	
 	push $ra
-	lw $t9, 0xffff0004
+	lw $t9, 0xffff0004		#t9 tem o endereço de onde fica salva a entrada do teclado
 
-	beq $t9, 0x00000077, CHAMA_ARENA
+	beq $t9, 0x00000077, CHAMA_ARENA	#se for w, chama a arena
 	nop
 
-	beq $t9, 0x00000032, FIM
+	beq $t9, 0x00000073, FIM		#se for s chama o fim
 	nop
 
-	j ESCOLHA
+	j ESCOLHA				#repete a função até ler algo
 	nop
 
 CHAMA_ARENA:
@@ -403,86 +404,149 @@ COMIDA:
 MENU_JOGAR:
 	push $ra
 
+	
 	#J
-	sw $s4, 1552($s0)
-	sw $s4, 1556($s0)
-	sw $s4, 1560($s0)
-	sw $s4, 1564($s0)
-	sw $s4, 1568($s0)
-	sw $s4, 1688($s0)
-	sw $s4, 1816($s0)
-	sw $s4, 1944($s0)
-	sw $s4, 1936($s0)
-	sw $s4, 2072($s0)
-	sw $s4, 2068($s0)
+	sw $s4, 784($s0)
+	sw $s4, 788($s0)
+	sw $s4, 792($s0)
+	sw $s4, 796($s0)
+	sw $s4, 800($s0)
+	sw $s4, 920($s0)
+	sw $s4, 1048($s0)
+	sw $s4, 1176($s0)
+	sw $s4, 1168($s0)
+	sw $s4, 1304($s0)
+	sw $s4, 1300($s0)
 
 	#O
-	sw $s4, 1576($s0)
-	sw $s4, 1580($s0)
-	sw $s4, 1584($s0)
-	sw $s4, 1588($s0)
-	sw $s4, 1704($s0)
-	sw $s4, 1716($s0)
-	sw $s4, 1832($s0)
-	sw $s4, 1844($s0)
-	sw $s4, 1960($s0)
-	sw $s4, 1972($s0)
-	sw $s4, 2088($s0)
-	sw $s4, 2088($s0)
-	sw $s4, 2092($s0)
-	sw $s4, 2096($s0)
-	sw $s4, 2100($s0)
+	sw $s4, 808($s0)
+	sw $s4, 812($s0)
+	sw $s4, 816($s0)
+	sw $s4, 820($s0)
+	sw $s4, 936($s0)
+	sw $s4, 948($s0)
+	sw $s4, 1064($s0)
+	sw $s4, 1076($s0)
+	sw $s4, 1192($s0)
+	sw $s4, 1204($s0)
+	sw $s4, 1320($s0)
+	sw $s4, 1324($s0)
+	sw $s4, 1328($s0)
+	sw $s4, 1332($s0)
 
 	#G
-	sw $s4, 1596($s0)
-	sw $s4, 1600($s0)
-	sw $s4, 1604($s0)
-	sw $s4, 1608($s0)
-	sw $s4, 1724($s0)
-	sw $s4, 1852($s0)
-	sw $s4, 1860($s0)
-	sw $s4, 1864($s0)
-	sw $s4, 1980($s0)
-	sw $s4, 1992($s0)
-	sw $s4, 2108($s0)
-	sw $s4, 2112($s0)
-	sw $s4, 2116($s0)
-	sw $s4, 2120($s0)
+	sw $s4, 828($s0)
+	sw $s4, 832($s0)
+	sw $s4, 836($s0)
+	sw $s4, 840($s0)
+	sw $s4, 956($s0)
+	sw $s4, 1084($s0)
+	sw $s4, 1092($s0)
+	sw $s4, 1096($s0)
+	sw $s4, 1212($s0)
+	sw $s4, 1224($s0)
+	sw $s4, 1340($s0)
+	sw $s4, 1344($s0)
+	sw $s4, 1348($s0)
+	sw $s4, 1352($s0)
 
 	#A
-	sw $s4, 1616($s0)
-	sw $s4, 1620($s0)
-	sw $s4, 1624($s0)
-	sw $s4, 1628($s0)
-	sw $s4, 1744($s0)
-	sw $s4, 1756($s0)
-	sw $s4, 1872($s0)
-	sw $s4, 1876($s0)
-	sw $s4, 1880($s0)
-	sw $s4, 1884($s0)
-	sw $s4, 2000($s0)
-	sw $s4, 2012($s0)
-	sw $s4, 2128($s0)
-	sw $s4, 2140($s0)
+	sw $s4, 848($s0)
+	sw $s4, 852($s0)
+	sw $s4, 856($s0)
+	sw $s4, 860($s0)
+	sw $s4, 976($s0)
+	sw $s4, 988($s0)
+	sw $s4, 1104($s0)
+	sw $s4, 1108($s0)
+	sw $s4, 1112($s0)
+	sw $s4, 1116($s0)
+	sw $s4, 1232($s0)
+	sw $s4, 1244($s0)
+	sw $s4, 1360($s0)
+	sw $s4, 1372($s0)
 
 
 	#R
-	sw $s4, 1636($s0)
-	sw $s4, 1640($s0)
-	sw $s4, 1644($s0)
-	sw $s4, 1648($s0)
-	sw $s4, 1764($s0)
-	sw $s4, 1776($s0)
-	sw $s4, 1892($s0)
-	sw $s4, 1896($s0)
-	sw $s4, 1900($s0)
-	sw $s4, 1904($s0)
-	sw $s4, 2020($s0)
-	sw $s4, 2028($s0)
-	sw $s4, 2148($s0)
-	sw $s4, 2160($s0)
-
-
+	sw $s4, 868($s0)
+	sw $s4, 872($s0)
+	sw $s4, 876($s0)
+	sw $s4, 880($s0)
+	sw $s4, 996($s0)
+	sw $s4, 1008($s0)
+	sw $s4, 1124($s0)
+	sw $s4, 1128($s0)
+	sw $s4, 1132($s0)
+	sw $s4, 1136($s0)
+	sw $s4, 1252($s0)
+	sw $s4, 1260($s0)
+	sw $s4, 1380($s0)
+	sw $s4, 1392($s0)
+	
+	
+	#S
+	sw $s4, 2328($s0)
+	sw $s4, 2332($s0)
+	sw $s4, 2336($s0)
+	sw $s4, 2340($s0)
+	sw $s4, 2456($s0)
+	sw $s4, 2584($s0)
+	sw $s4, 2588($s0)
+	sw $s4, 2592($s0)
+	sw $s4, 2596($s0)
+	sw $s4, 2724($s0)
+	sw $s4, 2840($s0)
+	sw $s4, 2844($s0)
+	sw $s4, 2848($s0)
+	sw $s4, 2852($s0)
+	
+	#A
+	sw $s4, 2348($s0)
+	sw $s4, 2352($s0)
+	sw $s4, 2356($s0)
+	sw $s4, 2360($s0)
+	sw $s4, 2476($s0)
+	sw $s4, 2488($s0)
+	sw $s4, 2604($s0)
+	sw $s4, 2608($s0)
+	sw $s4, 2612($s0)
+	sw $s4, 2616($s0)
+	sw $s4, 2732($s0)
+	sw $s4, 2744($s0)
+	sw $s4, 2860($s0)
+	sw $s4, 2872($s0)
+	
+	#I
+	sw $s4, 2368($s0)
+	sw $s4, 2372($s0)
+	sw $s4, 2376($s0)
+	sw $s4, 2380($s0)
+	sw $s4, 2384($s0)
+	sw $s4, 2504($s0)
+	sw $s4, 2632($s0)
+	sw $s4, 2760($s0)
+	sw $s4, 2880($s0)
+	sw $s4, 2884($s0)
+	sw $s4, 2888($s0)
+	sw $s4, 2892($s0)
+	sw $s4, 2896($s0)
+	
+	#R
+	sw $s4, 2392($s0)
+	sw $s4, 2396($s0)
+	sw $s4, 2400($s0)
+	sw $s4, 2404($s0)
+	sw $s4, 2520($s0)
+	sw $s4, 2532($s0)
+	sw $s4, 2648($s0)
+	sw $s4, 2652($s0)
+	sw $s4, 2656($s0)
+	sw $s4, 2660($s0)
+	sw $s4, 2776($s0)
+	sw $s4, 2784($s0)
+	sw $s4, 2904($s0)
+	sw $s4, 2916($s0)
+	
 	pop $ra
 	jr $ra
 	nop
