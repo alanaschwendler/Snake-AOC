@@ -100,24 +100,24 @@ MAIN:
 ##----------------- Configurações de gameplay ------------------------##
 
 	li $v0, 9		# Aloca memória para salvar os endereços da cobra
-	li $a0, 1024		# espaço que vai ser alocado
+	li $t2, 1024		# espaço que vai ser alocado
 	syscall
 	move $t3, $v0		# inicio do vetor da cobra em $t3
 	move $t4, $t3		# copia inicio do vetor para $t4
 
-	addi $a0, $s0, 1080	# posicao de inicio da cabeça
+	addi $t2, $s0, 1080	# posicao de inicio da cabeça
 
-	sw $a0, 0($t4)		# essa secao desenha a cabeça da cobra
+	sw $t2, 0($t4)		# essa secao desenha a cabeça da cobra
 	addi $t4, $t4, 4	# e o resto do corpo inicial
-	addi $a0, $a0, -4	# além disso, armazena cada parte
-	sw $a0, 0($t4)		# no vetor da cobra
+	addi $t2, $t2, -4	# além disso, armazena cada parte
+	sw $t2, 0($t4)		# no vetor da cobra
 	addi $t4, $t4, 4
-	addi $a0, $a0, -4
-	sw $a0, 0($t4)
+	addi $t2, $t2, -4
+	sw $t2, 0($t4)
 	
 	li $a2, 3		# tamanho da cobra inicial
-	li $a1, 0x00000064	# direcao de movimento inicial
-	move $t7, $a1
+	li $t9, 0x00000064	# direcao de movimento inicial
+	move $t7, $t9
 
 PLAY:
 	beq $zero, 1, DONE
@@ -126,70 +126,70 @@ PLAY:
 	li $t0, 2		# comeca contador
 	move $t4, $t3		# vai pro inicio do vetor
 
-	lw $a0, 0($t4)		# carrega cabeca
-	move $t5, $a0		# salva a posicao em $t5
+	lw $t2, 0($t4)		# carrega cabeca
+	move $t5, $t2		# salva a posicao em $t5
 
-	beq $a1, 0x00000064, cdireita
+	beq $t9, 0x00000064, cdireita
 	nop
-	beq $a1, 0x00000061, cesquerda
+	beq $t9, 0x00000061, cesquerda
 	nop
-	beq $a1, 0x00000077, ccima
+	beq $t9, 0x00000077, ccima
 	nop
-	beq $a1, 0x00000073, cbaixo
+	beq $t9, 0x00000073, cbaixo
 	nop
 
 	j PLAY
 	nop
 
 cbaixo:
-	addi $t1, $a0, 128	# testa se vai bater na parede
+	addi $t1, $t2, 128	# testa se vai bater na parede
 	lw $t1, 0($t1)
 	beq $t1, $s4, morreu	# se sim, morreu
 	nop
 	
-	addi $a0, $a0, 128	# atualiza cabeca
+	addi $t2, $t2, 128	# atualiza cabeca
 	j sai
 	nop
 ccima:
-	addi $t1, $a0, -128	# testa se vai bater na parede
+	addi $t1, $t2, -128	# testa se vai bater na parede
 	lw $t1, 0($t1)
 	beq $t1, $s4, morreu	# se sim, morreu
 	nop
 
-	addi $a0, $a0, -128	# atualiza cabeca
+	addi $t2, $t2, -128	# atualiza cabeca
 	j sai
 	nop
 cesquerda:
-	addi $t1, $a0, -4	# testa se vai bater na parede
+	addi $t1, $t2, -4	# testa se vai bater na parede
 	lw $t1, 0($t1)
 	beq $t1, $s4, morreu	# se sim, morreu
 	nop
 
-	addi $a0, $a0, -4	# atualiza cabeca
+	addi $t2, $t2, -4	# atualiza cabeca
 	j sai
 	nop
 cdireita:
-	addi $t1, $a0, 4	# testa se vai bater na parede
+	addi $t1, $t2, 4	# testa se vai bater na parede
 	lw $t1, 0($t1)
 	beq $t1, $s4, morreu	# se sim, morreu
 	nop
 	
-	addi $a0, $a0, 4	# atualiza cabeca
+	addi $t2, $t2, 4	# atualiza cabeca
 	j sai
 	nop
 
 sai:
-	sw $a0, 0($t4)		# salva na memoria
-	sw $s3, 0($a0) 		# pinta na tela
+	sw $t2, 0($t4)		# salva na memoria
+	sw $s3, 0($t2) 		# pinta na tela
 	addi $t4, $t4, 4	# proxima posicao do vetor
 
 mov:	beq $t0, $a2, pronta
 	nop
 
-	lw $a0, 0($t4)		# carrega posicao do pedaço
+	lw $t2, 0($t4)		# carrega posicao do pedaço
 	sw $t5, 0($t4)		# salva no vetor a posicao do pedaco anterior
-	sw $s3, 0($a0)		# pinta na tela
-	move $t5, $a0		# salva para proxima posicao em $t5
+	sw $s3, 0($t2)		# pinta na tela
+	move $t5, $t2		# salva para proxima posicao em $t5
 	addi $t4, $t4, 4	# atualiza apontador
 	addi $t0, $t0, 1	# atualiza contador
 	j mov
@@ -199,20 +199,20 @@ pronta:
 	
 	addi $t6, $zero, 10000	# variavel do delay
 	
-	lw $a0, 0($t4)		# carrega cauda
+	lw $t2, 0($t4)		# carrega cauda
 	sw $t5, 0($t4)		# atualiza cauda na memoria
 	
 	seq $t1, $t1, $s2	# carrega o teste da comida
 	beq $t1, 1, comeu
 	nop
 	
-	sw $s1, 0($a0)		# apaga cauda
+	sw $s1, 0($t2)		# apaga cauda
 	j delay
 	nop
 
 comeu:	
 	addi $t4, $t4, 4	# atualiza apontador
-	sw $a0, 0($t4)		# salva nova cauda 	
+	sw $t2, 0($t4)		# salva nova cauda 	
 	addi $a2, $a2, 1	# aumenta o tamanho	
 	
 	
@@ -242,7 +242,7 @@ delay:
 	nop
 
 atualiza_movimento:
-	move $a1, $t7
+	move $t9, $t7
 	j delay
 	nop
 
@@ -255,7 +255,7 @@ DONE:  li $v0, 10
 	
 morreu:
        li $v0, 4
-       la $a0, dead
+       la $t2, dead
        syscall
        j DONE
        nop
