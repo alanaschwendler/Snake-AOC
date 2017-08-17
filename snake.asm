@@ -658,6 +658,13 @@ MENU_JOGAR:
 
 MORREU:
 	push $ra
+
+	li $a0, 80		#emite som quando monta a arena
+	li $a1, 80
+	li $a2, 32
+	li $a3, 127
+	li $v0, 31
+	syscall
 	
 	#G
 	#sw $s4, 828($s0)
