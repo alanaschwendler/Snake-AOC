@@ -147,6 +147,8 @@ cbaixo:
 	lw $t1, 0($t1)
 	beq $t1, $s4, MORREU	# se sim, morreu
 	nop
+	beq $t1, $s3, MORREU
+	nop
 	
 	addi $t2, $t2, 128	# atualiza cabeca
 	j sai
@@ -155,6 +157,8 @@ ccima:
 	addi $t1, $t2, -128	# testa se vai bater na parede
 	lw $t1, 0($t1)
 	beq $t1, $s4, MORREU	# se sim, morreu
+	nop
+	beq $t1, $s3, MORREU
 	nop
 
 	addi $t2, $t2, -128	# atualiza cabeca
@@ -165,6 +169,8 @@ cesquerda:
 	lw $t1, 0($t1)
 	beq $t1, $s4, MORREU	# se sim, morreu
 	nop
+	beq $t1, $s3, MORREU
+	nop
 
 	addi $t2, $t2, -4	# atualiza cabeca
 	j sai
@@ -173,6 +179,8 @@ cdireita:
 	addi $t1, $t2, 4	# testa se vai bater na parede
 	lw $t1, 0($t1)
 	beq $t1, $s4, MORREU	# se sim, morreu
+	nop
+	beq $t1, $s3, MORREU
 	nop
 	
 	addi $t2, $t2, 4	# atualiza cabeca
@@ -253,7 +261,15 @@ delay:
 	nop
 
 atualiza_movimento:
+<<<<<<< HEAD
 	move $t9, $t7
+=======
+
+	beq $a1, $t7, delay
+	nop
+	
+	move $a1, $t7
+>>>>>>> 883fdf6ab8c8a88fc91ea832cc19b9b0b30cb640
 	j delay
 	nop
 
@@ -666,7 +682,14 @@ MENU_JOGAR:
 	nop
 
 MORREU:
-	push $ra
+	#push $ra
+
+	li $a0, 80		#emite som quando monta a arena
+	li $a1, 250		#duração em milissegundos
+	li $a2, 127		#qual som
+	li $a3, 127		#volume 
+	li $v0, 31
+	syscall
 	
 	#G
 	#sw $s4, 828($s0)
@@ -780,7 +803,7 @@ MORREU:
 	sw $s2, 2384($s0)
 	sw $s2, 2396($s0)
 	
-	pop $ra
+	#pop $ra
 	li $t9, 0
 	sw $t9, 0xffff0004
 	
@@ -789,6 +812,8 @@ MORREU:
 	
 	j DONE
 	nop
+	
+	
 
 FIM:
 	pop $ra
