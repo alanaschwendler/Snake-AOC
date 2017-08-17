@@ -9,8 +9,8 @@
 # Display height in pixels: 512
 # Base address for display: 0x10010000(static data)
 #
-#
-#
+# PRESSIONE W PARA COMEÇAR
+# PRESSIONE S PARA SAIR
 #
 ################################################################
 
@@ -61,6 +61,7 @@
 	corCobra: .word 0xFF7777
 	#corBorda: .word 0x00ffee
 	corBorda: .word 0x2d6965
+	corFim: .word 0x00000000
 
 	#tamanho inicial do jogador
 	tamanhoInicial: .half 5
@@ -144,7 +145,7 @@ PLAY:
 cbaixo:
 	addi $t1, $t2, 128	# testa se vai bater na parede
 	lw $t1, 0($t1)
-	beq $t1, $s4, morreu	# se sim, morreu
+	beq $t1, $s4, MORREU	# se sim, morreu
 	nop
 	
 	addi $t2, $t2, 128	# atualiza cabeca
@@ -153,7 +154,7 @@ cbaixo:
 ccima:
 	addi $t1, $t2, -128	# testa se vai bater na parede
 	lw $t1, 0($t1)
-	beq $t1, $s4, morreu	# se sim, morreu
+	beq $t1, $s4, MORREU	# se sim, morreu
 	nop
 
 	addi $t2, $t2, -128	# atualiza cabeca
@@ -162,7 +163,7 @@ ccima:
 cesquerda:
 	addi $t1, $t2, -4	# testa se vai bater na parede
 	lw $t1, 0($t1)
-	beq $t1, $s4, morreu	# se sim, morreu
+	beq $t1, $s4, MORREU	# se sim, morreu
 	nop
 
 	addi $t2, $t2, -4	# atualiza cabeca
@@ -171,7 +172,7 @@ cesquerda:
 cdireita:
 	addi $t1, $t2, 4	# testa se vai bater na parede
 	lw $t1, 0($t1)
-	beq $t1, $s4, morreu	# se sim, morreu
+	beq $t1, $s4, MORREU	# se sim, morreu
 	nop
 	
 	addi $t2, $t2, 4	# atualiza cabeca
@@ -210,10 +211,20 @@ pronta:
 	j delay
 	nop
 
-comeu:	
+comeu:		
 	addi $t4, $t4, 4	# atualiza apontador
 	sw $t2, 0($t4)		# salva nova cauda 	
-	addi $a2, $a2, 1	# aumenta o tamanho	
+	addi $a2, $a2, 1	# aumenta o tamanho
+	
+	ori $v0, $zero, 42
+	ori $a0, $zero, 1
+	ori $a1, $zero, 1020
+	addi $a1, $a1, 0x10010000
+	syscall
+	
+	sll $a0, $a0, 2
+	sw $s2, 0($a0)
+	
 	
 	
 delay:
@@ -250,13 +261,19 @@ fdelay:	j PLAY
 	nop
 
 
-DONE:  li $v0, 10
+DONE:  
+	lui $s1, 0
+	lui $s2, 0
+	lui $s3, 0
+	lui $s4, 0
+	
+	jal ARENA
+	nop
+	
+	li $v0, 10
 	syscall
 	
 morreu:
-       li $v0, 4
-       la $t2, dead
-       syscall
        j DONE
        nop
        
@@ -279,6 +296,7 @@ MENU:
 	pop $s0
 	push $s0
 	jal MENU_JOGAR
+	#jal MORREU
 	nop
 
 	pop $s0
@@ -301,11 +319,11 @@ LOOP_ESCOLHA:
 	beq $t9, 0x00000077, CHAMA_ARENA	#se for w, chama a arena
 	nop
 
-	beq $t9, 0x00000073, FIM_LOOP		#se for s chama o fim
+	beq $t9, 0x00000073, DONE		#se for s chama o fim
 	nop
 	
 	add $t0, $t0, 1
-	beq $t0, 100000, FIM_LOOP
+	beq $t0, 0xFFFFFFFF, FIM_LOOP
 	nop
 	
 	j LOOP_ESCOLHA				#repete a função até ler algo
@@ -490,7 +508,9 @@ END_LOOP_BORDA_DIREITA:
 
 COMIDA:
 	push $ra
-	sw $s2, 1088($s0)
+	
+	sw $s2,1808($s0)		#pinta a comida com base no s0
+	
 	pop $ra
 	jr $ra
 	nop
@@ -513,23 +533,23 @@ MENU_JOGAR:
 	sw $s4, 1300($s0)
 
 	#O
-	sw $s4, 808($s0)
+	#sw $s4, 808($s0)
 	sw $s4, 812($s0)
 	sw $s4, 816($s0)
-	sw $s4, 820($s0)
+	#sw $s4, 820($s0)
 	sw $s4, 936($s0)
 	sw $s4, 948($s0)
 	sw $s4, 1064($s0)
 	sw $s4, 1076($s0)
 	sw $s4, 1192($s0)
 	sw $s4, 1204($s0)
-	sw $s4, 1320($s0)
+	#sw $s4, 1320($s0)
 	sw $s4, 1324($s0)
 	sw $s4, 1328($s0)
-	sw $s4, 1332($s0)
+	#sw $s4, 1332($s0)
 
 	#G
-	sw $s4, 828($s0)
+	#sw $s4, 828($s0)
 	sw $s4, 832($s0)
 	sw $s4, 836($s0)
 	sw $s4, 840($s0)
@@ -539,16 +559,16 @@ MENU_JOGAR:
 	sw $s4, 1096($s0)
 	sw $s4, 1212($s0)
 	sw $s4, 1224($s0)
-	sw $s4, 1340($s0)
+	#sw $s4, 1340($s0)
 	sw $s4, 1344($s0)
 	sw $s4, 1348($s0)
-	sw $s4, 1352($s0)
+	#sw $s4, 1352($s0)
 
 	#A
-	sw $s4, 848($s0)
+	#sw $s4, 848($s0)
 	sw $s4, 852($s0)
 	sw $s4, 856($s0)
-	sw $s4, 860($s0)
+	#sw $s4, 860($s0)
 	sw $s4, 976($s0)
 	sw $s4, 988($s0)
 	sw $s4, 1104($s0)
@@ -562,10 +582,10 @@ MENU_JOGAR:
 
 
 	#R
-	sw $s4, 868($s0)
+	#sw $s4, 868($s0)
 	sw $s4, 872($s0)
 	sw $s4, 876($s0)
-	sw $s4, 880($s0)
+	#sw $s4, 880($s0)
 	sw $s4, 996($s0)
 	sw $s4, 1008($s0)
 	sw $s4, 1124($s0)
@@ -595,10 +615,10 @@ MENU_JOGAR:
 	sw $s4, 2852($s0)
 	
 	#A
-	sw $s4, 2348($s0)
+	#sw $s4, 2348($s0)
 	sw $s4, 2352($s0)
 	sw $s4, 2356($s0)
-	sw $s4, 2360($s0)
+	#sw $s4, 2360($s0)
 	sw $s4, 2476($s0)
 	sw $s4, 2488($s0)
 	sw $s4, 2604($s0)
@@ -626,10 +646,10 @@ MENU_JOGAR:
 	sw $s4, 2896($s0)
 	
 	#R
-	sw $s4, 2392($s0)
+	#sw $s4, 2392($s0)
 	sw $s4, 2396($s0)
 	sw $s4, 2400($s0)
-	sw $s4, 2404($s0)
+	#sw $s4, 2404($s0)
 	sw $s4, 2520($s0)
 	sw $s4, 2532($s0)
 	sw $s4, 2648($s0)
@@ -645,6 +665,130 @@ MENU_JOGAR:
 	jr $ra
 	nop
 
+MORREU:
+	push $ra
+	
+	#G
+	#sw $s4, 828($s0)
+	sw $s2, 788($s0)
+	sw $s2, 792($s0)
+	sw $s2, 796($s0)
+	sw $s2, 912($s0)
+	sw $s2, 1040($s0)
+	sw $s2, 1048($s0)
+	sw $s2, 1052($s0)
+	sw $s2, 1168($s0)
+	sw $s2, 1180($s0)
+	sw $s2, 1300($s0)
+	sw $s2, 1304($s0)
+
+	#A
+	sw $s2, 808($s0)
+	sw $s2, 812($s0)
+	sw $s2, 932($s0)
+	sw $s2, 944($s0)
+	sw $s2, 1060($s0)
+	sw $s2, 1064($s0)
+	sw $s2, 1068($s0)
+	sw $s2, 1072($s0)
+	sw $s2, 1188($s0)
+	sw $s2, 1200($s0)
+	sw $s2, 1316($s0)
+	sw $s2, 1328($s0)
+	
+	#M
+	sw $s2, 824($s0)
+	sw $s2, 840($s0)
+	sw $s2, 952($s0)
+	sw $s2, 956($s0)
+	sw $s2, 964($s0)
+	sw $s2, 968($s0)
+	sw $s2, 1080($s0)
+	sw $s2, 1088($s0)
+	sw $s2, 1096($s0)
+	sw $s2, 1208($s0)
+	sw $s2, 1224($s0)
+	sw $s2, 1336($s0)
+	sw $s2, 1352($s0)
+	
+	#E
+	sw $s2, 848($s0)
+	sw $s2, 852($s0)
+	sw $s2, 856($s0)
+	sw $s2, 860($s0)
+	sw $s2, 976($s0)
+	sw $s2, 1104($s0)
+	sw $s2, 1108($s0)
+	sw $s2, 1112($s0)
+	sw $s2, 1116($s0)
+	sw $s2, 1232($s0)
+	sw $s2, 1360($s0)
+	sw $s2, 1364($s0)
+	sw $s2, 1368($s0)
+	sw $s2, 1372($s0)
+	
+	#O
+	sw $s2, 1812($s0)
+	sw $s2, 1816($s0)
+	sw $s2, 1936($s0)
+	sw $s2, 1948($s0)
+	sw $s2, 2064($s0)
+	sw $s2, 2076($s0)
+	sw $s2, 2192($s0)
+	sw $s2, 2204($s0)
+	sw $s2, 2324($s0)
+	sw $s2, 2328($s0)
+	
+	#V
+	sw $s2, 1828($s0)
+	sw $s2, 1844($s0)
+	sw $s2, 1956($s0)
+	sw $s2, 1972($s0)
+	sw $s2, 2084($s0)
+	sw $s2, 2100($s0)
+	sw $s2, 2216($s0)
+	sw $s2, 2224($s0)
+	sw $s2, 2348($s0)
+	
+	#E
+	sw $s2, 1852($s0)
+	sw $s2, 1856($s0)
+	sw $s2, 1860($s0)
+	sw $s2, 1864($s0)
+	sw $s2, 1980($s0)
+	sw $s2, 2108($s0)
+	sw $s2, 2112($s0)
+	sw $s2, 2116($s0)
+	sw $s2, 2120($s0)
+	sw $s2, 2236($s0)
+	sw $s2, 2364($s0)
+	sw $s2, 2368($s0)
+	sw $s2, 2372($s0)
+	sw $s2, 2376($s0)
+	
+	#R
+	sw $s2, 1876($s0)
+	sw $s2, 1880($s0)
+	sw $s2, 2000($s0)
+	sw $s2, 2012($s0)
+	sw $s2, 2128($s0)
+	sw $s2, 2132($s0)
+	sw $s2, 2136($s0)
+	sw $s2, 2140($s0)
+	sw $s2, 2256($s0)
+	sw $s2, 2264($s0)
+	sw $s2, 2384($s0)
+	sw $s2, 2396($s0)
+	
+	pop $ra
+	li $t9, 0
+	sw $t9, 0xffff0004
+	
+	j ESCOLHA
+	nop 
+	
+	j DONE
+	nop
 
 FIM:
 	pop $ra
