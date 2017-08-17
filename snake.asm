@@ -9,8 +9,8 @@
 # Display height in pixels: 512
 # Base address for display: 0x10010000(static data)
 #
-#
-#
+# PRESSIONE W PARA COMEÇAR
+# PRESSIONE S PARA SAIR
 #
 ################################################################
 
@@ -209,7 +209,8 @@ MENU:
 
 	pop $s0
 	push $s0
-	jal MENU_JOGAR
+	#jal MENU_JOGAR
+	jal MORREU
 	nop
 
 	pop $s0
@@ -444,23 +445,23 @@ MENU_JOGAR:
 	sw $s4, 1300($s0)
 
 	#O
-	sw $s4, 808($s0)
+	#sw $s4, 808($s0)
 	sw $s4, 812($s0)
 	sw $s4, 816($s0)
-	sw $s4, 820($s0)
+	#sw $s4, 820($s0)
 	sw $s4, 936($s0)
 	sw $s4, 948($s0)
 	sw $s4, 1064($s0)
 	sw $s4, 1076($s0)
 	sw $s4, 1192($s0)
 	sw $s4, 1204($s0)
-	sw $s4, 1320($s0)
+	#sw $s4, 1320($s0)
 	sw $s4, 1324($s0)
 	sw $s4, 1328($s0)
-	sw $s4, 1332($s0)
+	#sw $s4, 1332($s0)
 
 	#G
-	sw $s4, 828($s0)
+	#sw $s4, 828($s0)
 	sw $s4, 832($s0)
 	sw $s4, 836($s0)
 	sw $s4, 840($s0)
@@ -470,16 +471,16 @@ MENU_JOGAR:
 	sw $s4, 1096($s0)
 	sw $s4, 1212($s0)
 	sw $s4, 1224($s0)
-	sw $s4, 1340($s0)
+	#sw $s4, 1340($s0)
 	sw $s4, 1344($s0)
 	sw $s4, 1348($s0)
-	sw $s4, 1352($s0)
+	#sw $s4, 1352($s0)
 
 	#A
-	sw $s4, 848($s0)
+	#sw $s4, 848($s0)
 	sw $s4, 852($s0)
 	sw $s4, 856($s0)
-	sw $s4, 860($s0)
+	#sw $s4, 860($s0)
 	sw $s4, 976($s0)
 	sw $s4, 988($s0)
 	sw $s4, 1104($s0)
@@ -493,10 +494,10 @@ MENU_JOGAR:
 
 
 	#R
-	sw $s4, 868($s0)
+	#sw $s4, 868($s0)
 	sw $s4, 872($s0)
 	sw $s4, 876($s0)
-	sw $s4, 880($s0)
+	#sw $s4, 880($s0)
 	sw $s4, 996($s0)
 	sw $s4, 1008($s0)
 	sw $s4, 1124($s0)
@@ -526,10 +527,10 @@ MENU_JOGAR:
 	sw $s4, 2852($s0)
 	
 	#A
-	sw $s4, 2348($s0)
+	#sw $s4, 2348($s0)
 	sw $s4, 2352($s0)
 	sw $s4, 2356($s0)
-	sw $s4, 2360($s0)
+	#sw $s4, 2360($s0)
 	sw $s4, 2476($s0)
 	sw $s4, 2488($s0)
 	sw $s4, 2604($s0)
@@ -557,10 +558,10 @@ MENU_JOGAR:
 	sw $s4, 2896($s0)
 	
 	#R
-	sw $s4, 2392($s0)
+	#sw $s4, 2392($s0)
 	sw $s4, 2396($s0)
 	sw $s4, 2400($s0)
-	sw $s4, 2404($s0)
+	#sw $s4, 2404($s0)
 	sw $s4, 2520($s0)
 	sw $s4, 2532($s0)
 	sw $s4, 2648($s0)
@@ -576,6 +577,19 @@ MENU_JOGAR:
 	jr $ra
 	nop
 
+MORREU:
+	push $ra
+	
+	sw $s2, 1552($s0)
+	sw $s2, 1680($s0)
+	sw $s2, 1684($s0)
+	sw $s2, 1808($s0)
+	sw $s2, 1816($s0)
+	sw $s2, 1936($s0)
+
+	pop $ra
+	jr $ra
+	nop
 
 FIM:
 	pop $ra
