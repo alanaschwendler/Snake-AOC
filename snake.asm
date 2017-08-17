@@ -115,13 +115,13 @@ MAIN:
 	addi $a0, $a0, -4
 	sw $a0, 0($t4)
 	
-	li $a2, 3		# tamanho da cobra
+	li $a2, 3		# tamanho da cobra inicial
+	li $a1, 0x00000064	# direcao de movimento inicial
+	move $t7, $a1
 
 PLAY:
 	beq $zero, 1, DONE
 	nop
-
-	li $a1, 1		# direcao de movimento
 
 	li $t0, 2		# comeca contador
 	move $t4, $t3		# vai pro inicio do vetor
@@ -129,13 +129,13 @@ PLAY:
 	lw $a0, 0($t4)		# carrega cabeca
 	move $t5, $a0		# salva a posicao em $t5
 
-	beq $a1, 1, cdireita
+	beq $a1, 0x00000064, cdireita
 	nop
-	beq $a1, 2, cesquerda
+	beq $a1, 0x00000061, cesquerda
 	nop
-	beq $a1, 3, ccima
+	beq $a1, 0x00000077, ccima
 	nop
-	beq $a1, 4, cbaixo
+	beq $a1, 0x00000073, cbaixo
 	nop
 
 	j PLAY
@@ -164,7 +164,6 @@ cesquerda:
 	lw $t1, 0($t1)
 	beq $t1, $s4, morreu	# se sim, morreu
 	nop
-
 
 	addi $a0, $a0, -4	# atualiza cabeca
 	j sai
@@ -217,13 +216,35 @@ comeu:
 	addi $a2, $a2, 1	# aumenta o tamanho	
 	
 	
-delay:	nop
-	addi $t6, $t6, -1
+delay:
 	beq $t6, $zero, fdelay
+	nop
+	addi $t6, $t6, -1
+	
+	
+	lw $t7, 0xffff0004
+	
+	beq $t7, 0x00000077, atualiza_movimento	
+	nop
+	
+	beq $t7, 0x00000073, atualiza_movimento	
+	nop
+	
+	beq $t7, 0x00000064, atualiza_movimento	
+	nop
+	
+	beq $t7, 0x00000061, atualiza_movimento	
+	nop
+	
+
 	nop
 	j delay
 	nop
 
+atualiza_movimento:
+	move $a1, $t7
+	j delay
+	nop
 
 fdelay:	j PLAY
 	nop
