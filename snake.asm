@@ -251,8 +251,8 @@ delay:
 	nop
 
 atualiza_movimento:
-
-	beq $a1, $t7, delay
+	add $a1, $a1, $t7
+	beq $a1, 0, delay
 	nop
 	
 	move $a1, $t7
