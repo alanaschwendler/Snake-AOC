@@ -176,9 +176,17 @@ pronta:
 	lw $a0, 0($t4)		# carrega cauda
 	sw $t5, 0($t4)		# atualiza cauda na memoria
 	sw $s1, 0($a0)		# apaga cauda
+	
+	addi $t6, $zero, 10000	# variavel do delay
+delay:	nop
+	addi $t6, $t6, -1
+	beq $t6, $zero, fdelay
+	nop
+	j delay
+	nop
 
 
-	j PLAY
+fdelay:	j PLAY
 	nop
 
 
