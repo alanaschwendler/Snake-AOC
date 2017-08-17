@@ -74,6 +74,9 @@
 	baixo: .ascii "s"
 	esquerda: .ascii "a"
 	direita: .ascii "d"
+	
+	espaco: .space 4096
+	dead: .asciiz "Morreu!"
 .text
 
 MAIN:
@@ -138,6 +141,11 @@ PLAY:
 	nop
 
 cbaixo:
+	addi $t1, $a0, 128	# testa se vai bater na parede
+	lw $t1, 0($t1)
+	beq $t1, $s4, morreu	# se sim, morreu
+	nop
+	
 	addi $a0, $a0, 128	# atualiza cabeca
 	j sai
 	nop
@@ -150,6 +158,11 @@ cesquerda:
 	j sai
 	nop
 cdireita:
+	addi $t1, $a0, 4	# testa se vai bater na parede
+	lw $t1, 0($t1)
+	beq $t1, $s4, morreu	# se sim, morreu
+	nop
+	
 	addi $a0, $a0, 4	# atualiza cabeca
 	j sai
 	nop
@@ -192,6 +205,15 @@ fdelay:	j PLAY
 
 DONE:  li $v0, 10
 	syscall
+	
+morreu:
+       li $v0, 4
+       la $a0, dead
+       syscall
+       j DONE
+       nop
+       
+	
 
 
 ###############################################################################################################################################
